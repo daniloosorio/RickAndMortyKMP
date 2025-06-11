@@ -6,7 +6,7 @@ import org.example.richandmorty.domain.model.CharacterModel
 
 @Serializable
 data class CharacterResponse (
-    @SerialName("id") val id:String,
+    @SerialName("id") val id:Int,
     val status:String,
     val image: String
 ) {
