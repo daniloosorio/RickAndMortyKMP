@@ -11,6 +11,7 @@ fun Preview (){
     CharacterOfTheDay(CharacterModel(
         id = 3,
         isAlive = true,
-        image = ""
+        image = "",
+        name = "preview"
     ))
 }

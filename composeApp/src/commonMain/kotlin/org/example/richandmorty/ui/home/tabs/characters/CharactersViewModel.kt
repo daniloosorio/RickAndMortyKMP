@@ -11,10 +11,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.example.richandmorty.domain.GetRandomCharacter
+import org.example.richandmorty.domain.Repository
 import org.example.richandmorty.domain.model.CharacterModel
 
 class CharactersViewModel(
-    val getRandomCharacter: GetRandomCharacter
+    val getRandomCharacter: GetRandomCharacter,
+    private val repository: Repository
 ) : ViewModel() {
     private val _state = MutableStateFlow<CharactersState>(CharactersState())
     val state: StateFlow<CharactersState> = _state
@@ -26,6 +28,15 @@ class CharactersViewModel(
             }
 
             _state.update {state -> state.copy(characterOfTheDay = result) }
+        }
+        getAllCharacters()
+    }
+
+    fun getAllCharacters(){
+        _state.update { state ->
+            state.copy(
+                characters = repository.getAllCharacters()
+            )
         }
     }
 }
