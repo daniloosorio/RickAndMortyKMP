@@ -65,6 +65,7 @@ kotlin {
 
             implementation(libs.paging.compose.common)
             implementation(libs.paging.common)
+            implementation(libs.kermit)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

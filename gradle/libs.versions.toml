@@ -12,9 +12,10 @@ androidx-lifecycle = "2.9.0"
 androidx-testExt = "1.2.1"
 composeMultiplatform = "1.8.1"
 junit = "4.13.2"
+kermit = "2.0.4"
 kotlin = "2.1.21"
 navigationCompose = "2.9.0-beta01"
-koin = "3.5.6"
+koin = "4.0.4"
 koinCompose = "1.1.5"
 koinComposeViewModel = "1.2.0-Beta4"
 ktor = "2.3.12"
@@ -23,6 +24,7 @@ coil = "3.0.0-alpha08"
 pagingComposeCommon = "3.3.0-alpha02-0.4.0"
 
 [libraries]
+kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }
