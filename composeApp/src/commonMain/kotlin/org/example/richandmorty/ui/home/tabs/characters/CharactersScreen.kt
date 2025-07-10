@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -51,10 +53,7 @@ fun CharactersScreens(
 ) {
     val uiState by charactersViewModel.state.collectAsState()
     val characters = uiState.characters.collectAsLazyPagingItems()
-    //Column(Modifier.fillMaxSize()) {
-      //  CharacterOfTheDay(uiState.characterOfTheDay)
-        CharacterLazyGridList(characters,uiState)
-    //}
+    CharacterLazyGridList(characters,uiState)
 }
 
 @Composable
@@ -95,9 +94,9 @@ fun CharacterLazyGridList(characters: LazyPagingItems<CharacterModel>, uiState: 
                     }
 
                 }
-                if(characters.loadState.refresh is LoadState.Loading){
+                if(characters.loadState.append is LoadState.Loading){
                     item (span = {GridItemSpan(2)}){
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                        Box(modifier = Modifier.fillMaxWidth().height(100.dp), contentAlignment = Alignment.Center){
                             CircularProgressIndicator(Modifier.size(64.dp), color = Color.Red)
                         }
                     }
@@ -110,14 +109,15 @@ fun CharacterLazyGridList(characters: LazyPagingItems<CharacterModel>, uiState: 
 @Composable
 fun CharacterItemList(charactersModel: CharacterModel) {
     Box(modifier = Modifier.clip(RoundedCornerShape(24))
-        .border(2.dp, color = Color.Green, shape = RoundedCornerShape(0,24,0,24))
+        .border(2.dp, color = Color.Green, shape = RoundedCornerShape(0,24,0,24)).fillMaxWidth().height(150.dp)
         .clickable {  },
         contentAlignment = Alignment.BottomCenter){
         AsyncImage(
             model = charactersModel.image,
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            placeholder = painterResource(Res.drawable.images)
         )
         Box(modifier = Modifier.fillMaxWidth().height(60.dp).background(
             brush = Brush.verticalGradient(
@@ -138,8 +138,8 @@ fun CharacterItemList(charactersModel: CharacterModel) {
 fun CharacterOfTheDay(characterModel: CharacterModel? = null) {
     Card(modifier = Modifier.fillMaxWidth().height(400.dp), shape = RoundedCornerShape(12)) {
         if (characterModel == null) {
-            Box(contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                CircularProgressIndicator(color = Color.Green)
             }
         } else {
             Box(contentAlignment = Alignment.BottomStart) {
@@ -169,7 +169,7 @@ fun CharacterOfTheDay(characterModel: CharacterModel? = null) {
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .padding(horizontal = 24.dp, vertical = 16.dp)
-                        //.fillMaxHeight()
+                        .fillMaxHeight()
                         .vertical()
                         .rotate(-90f)
                     )
