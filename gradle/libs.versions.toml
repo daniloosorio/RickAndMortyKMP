@@ -24,9 +24,10 @@ coil = "3.0.0-alpha08"
 pagingComposeCommon = "3.3.0-alpha02-0.4.0"
 kotlinxDatetime = "0.7.1"
 
-roomCommon = "2.7.0"
-ksp = "2.1.10-1.0.29" # this version should match with kotlin version to avoid crashes
-androidx-sqliteBundled = "2.5.0"
+#Room
+roomCommon = "2.7.2"
+ksp = "2.1.21-2.0.1"
+androidx-sqliteBundled = "2.5.2"
 
 [libraries]
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
