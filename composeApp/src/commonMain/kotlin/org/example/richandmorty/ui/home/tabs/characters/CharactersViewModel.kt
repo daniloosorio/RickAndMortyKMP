@@ -3,6 +3,7 @@ package org.example.richandmorty.ui.home.tabs.characters
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,7 +36,7 @@ class CharactersViewModel(
     fun getAllCharacters(){
         _state.update { state ->
             state.copy(
-                characters = repository.getAllCharacters()
+                characters = repository.getAllCharacters().cachedIn(viewModelScope)
             )
         }
     }

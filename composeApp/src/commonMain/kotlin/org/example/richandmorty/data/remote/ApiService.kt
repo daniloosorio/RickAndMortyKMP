@@ -6,6 +6,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import org.example.richandmorty.data.remote.response.CharacterResponse
 import org.example.richandmorty.data.remote.response.CharactersWrapperResponse
+import org.example.richandmorty.data.remote.response.EpisodeWrapperResponse
 import kotlin.contracts.Returns
 
 class ApiService(private val client: HttpClient) {
@@ -18,6 +19,11 @@ class ApiService(private val client: HttpClient) {
         return client.get(urlString = "/api/character/"){
             parameter("page",page)
         }.body()
+    }
 
+    suspend fun getAllEpisodes(page: Int): EpisodeWrapperResponse {
+        return client.get(urlString =  "/api/episode"){
+            parameter("page", page)
+        }.body()
     }
 }

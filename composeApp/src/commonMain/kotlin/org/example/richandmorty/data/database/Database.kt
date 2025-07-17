@@ -15,4 +15,5 @@ expect object RickMortyCTor: RoomDatabaseConstructor<RickMortyDatabase>
 @ConstructedBy(RickMortyCTor::class)
 abstract class RickMortyDatabase: RoomDatabase(){
     abstract fun getPreferencesDao() : UserPreferencesDao
+
 }
