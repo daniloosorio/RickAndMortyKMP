@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import org.example.richandmorty.data.database.entity.CharacterOfTheDayEntity
 import org.example.richandmorty.domain.model.CharacterModel
 import org.example.richandmorty.domain.model.CharacterOfTheDayModel
+import org.example.richandmorty.domain.model.EpisodeModel
 
 interface Repository {
     suspend fun getSingleCharacter(id: String):CharacterModel
@@ -12,4 +13,5 @@ interface Repository {
 
     suspend fun getCharacterDB(): CharacterOfTheDayModel?
     suspend fun saveCharacterDb(characterOfTheDayModel:CharacterOfTheDayModel)
+    fun getAllEpisodes(): Flow<PagingData<EpisodeModel>>
 }
