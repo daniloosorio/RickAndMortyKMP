@@ -7,5 +7,6 @@ import org.example.richandmorty.domain.model.CharacterModel
 import org.example.richandmorty.domain.model.EpisodeModel
 
 data class EpisodesState (
-    val characters: Flow<PagingData<EpisodeModel>> = emptyFlow()
+    val characters: Flow<PagingData<EpisodeModel>> = emptyFlow(),
+    val playVideo: String = ""
 )

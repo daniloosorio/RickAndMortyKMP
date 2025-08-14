@@ -21,4 +21,8 @@ class EpisodesViewmodel(
             )
         }
     }
+
+    fun onPlaySelectedUrl(url: String){
+        _state.update { state -> state.copy(playVideo = url)}
+    }
 }

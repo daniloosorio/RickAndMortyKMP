@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -24,22 +25,32 @@ import org.example.richandmorty.domain.model.SeasonEpisode
 import org.example.richandmorty.ui.core.components.PagingLoadingState
 import org.example.richandmorty.ui.core.components.PagingType
 import org.example.richandmorty.ui.core.components.PagingWrapper
+import org.example.richandmorty.ui.core.components.VideoPlayer
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
+import richandmorty.composeapp.generated.resources.Res
+import richandmorty.composeapp.generated.resources.images
+import richandmorty.composeapp.generated.resources.season1
+import richandmorty.composeapp.generated.resources.season2
+import richandmorty.composeapp.generated.resources.season3
+import richandmorty.composeapp.generated.resources.season4
+import richandmorty.composeapp.generated.resources.season5
+import richandmorty.composeapp.generated.resources.season6
+import richandmorty.composeapp.generated.resources.season7
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
 fun EpisodesScreen(
     episodesViewmodel: EpisodesViewmodel = koinViewModel<EpisodesViewmodel>()
 ) {
-   val episodesViewmodel = koinViewModel<EpisodesViewmodel>()
+    val episodesViewmodel = koinViewModel<EpisodesViewmodel>()
 
     val state by episodesViewmodel.state.collectAsState()
     val episodes: LazyPagingItems<EpisodeModel> = state.characters.collectAsLazyPagingItems()
 
-    Box(Modifier.fillMaxSize()){
+    Column(Modifier.fillMaxSize()){
         PagingWrapper(
             pagingType = PagingType.ROW,
             pagingItems = episodes,
@@ -47,32 +58,37 @@ fun EpisodesScreen(
                 PagingLoadingState()
             },
             emptyView = {},
-            itemView = { EpisodeItemList(it)}
+            itemView = { EpisodeItemList(it){url -> episodesViewmodel.onPlaySelectedUrl(url)} }
         )
+
+        if (state.playVideo.isNotBlank()){
+            VideoPlayer(modifier = Modifier.size(300.dp),state.playVideo)
+        }
     }
 }
 
 @Composable
-fun EpisodeItemList(episodeModel: EpisodeModel){
-    Column(modifier = Modifier.width(120.dp).padding(horizontal = 8.dp).clickable{}){
+fun EpisodeItemList(episode: EpisodeModel,onEpisodeSelected:(String) ->Unit){
+    Column(modifier = Modifier.width(120.dp).padding(horizontal = 8.dp).clickable{onEpisodeSelected(episode.videoURL)}){
         Image(
             modifier = Modifier.height(200.dp).fillMaxSize(),
             contentDescription = null,
             contentScale = ContentScale.Inside,
-            painter = painterResource()
+            painter = painterResource(getSeasonImage(episode.season))
         )
     }
 }
 
 fun getSeasonImage(seasonEpisode: SeasonEpisode): DrawableResource {
     return when(seasonEpisode){
-        SeasonEpisode.SEASON_1 -> TODO()
-        SeasonEpisode.SEASON_2 -> TODO()
-        SeasonEpisode.SEASON_3 -> TODO()
-        SeasonEpisode.SEASON_4 -> TODO()
-        SeasonEpisode.SEASON_5 -> TODO()
-        SeasonEpisode.SEASON_6 -> TODO()
-        SeasonEpisode.SEASON_7 -> TODO()
-        SeasonEpisode.UNKNOW -> TODO()
+        SeasonEpisode.SEASON_1 -> Res.drawable.season1
+        SeasonEpisode.SEASON_2 -> Res.drawable.season2
+        SeasonEpisode.SEASON_3 -> Res.drawable.season3
+        SeasonEpisode.SEASON_4 -> Res.drawable.season4
+        SeasonEpisode.SEASON_5 -> Res.drawable.season5
+        SeasonEpisode.SEASON_6 -> Res.drawable.season6
+        SeasonEpisode.SEASON_7 -> Res.drawable.season7
+        SeasonEpisode.UNKNOW -> Res.drawable.season1
+
     }
 }

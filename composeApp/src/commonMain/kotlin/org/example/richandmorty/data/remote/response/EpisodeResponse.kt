@@ -26,7 +26,7 @@ data class EpisodeResponse (
 
     private fun getVideoUrlFromSeason(season: SeasonEpisode):String {
        return when(season){
-            SEASON_1 -> "https://www.youtube.com/watch?v=8BEzj2kRjO8&ab_channel=RottenTomatoesTV"
+            SEASON_1 -> "https://firebasestorage.googleapis.com/v0/b/kmprickandmorty.firebasestorage.app/o/ssvid.net--Rick-and-Morty-Season-8-Official-Trailer-adult_v720P.mp4?alt=media&token=77892824-c730-4834-bba4-dcdcdff21708"
             SEASON_2 -> "https://www.youtube.com/watch?v=SXwf_9xJu5c&ab_channel=Yusuto"
             SEASON_3 -> "https://www.youtube.com/watch?v=Bmg2vXOQ3kM&ab_channel=SeriesTrailerMP"
             SEASON_4 -> "https://www.youtube.com/watch?v=bLI2-v264No&ab_channel=RottenTomatoesTV"

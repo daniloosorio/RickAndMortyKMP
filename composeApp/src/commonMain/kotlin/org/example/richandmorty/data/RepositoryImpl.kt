@@ -46,8 +46,7 @@ class RepositoryImpl(
     }
 
     override fun getAllEpisodes(): Flow<PagingData<EpisodeModel>> {
-        return Pager(
-            config = PagingConfig(pageSize = MAX_ITEMS, prefetchDistance = PREFETCH_ITEMS),
-            pagingSourceFactory = {})
+        return Pager(config = PagingConfig(pageSize = MAX_ITEMS, prefetchDistance = PREFETCH_ITEMS),
+            pagingSourceFactory = { episodePagingSource }).flow
     }
 }
