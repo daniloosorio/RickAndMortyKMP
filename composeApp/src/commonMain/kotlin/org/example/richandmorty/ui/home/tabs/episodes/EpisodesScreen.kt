@@ -1,21 +1,34 @@
 package org.example.richandmorty.ui.home.tabs.episodes
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.room.util.TableInfo
 import app.cash.paging.compose.LazyPagingItems
@@ -50,7 +63,7 @@ fun EpisodesScreen(
     val state by episodesViewmodel.state.collectAsState()
     val episodes: LazyPagingItems<EpisodeModel> = state.characters.collectAsLazyPagingItems()
 
-    Column(Modifier.fillMaxSize()){
+    Column(Modifier.fillMaxSize()) {
         PagingWrapper(
             pagingType = PagingType.ROW,
             pagingItems = episodes,
@@ -58,18 +71,20 @@ fun EpisodesScreen(
                 PagingLoadingState()
             },
             emptyView = {},
-            itemView = { EpisodeItemList(it){url -> episodesViewmodel.onPlaySelectedUrl(url)} }
+            itemView = { EpisodeItemList(it) { url -> episodesViewmodel.onPlaySelectedUrl(url) } }
         )
+        EpisodePlayer(state.playVideo){episodesViewmodel.onCloseVideo()}
 
-        if (state.playVideo.isNotBlank()){
-            VideoPlayer(modifier = Modifier.size(300.dp),state.playVideo)
-        }
     }
 }
 
+
+
 @Composable
-fun EpisodeItemList(episode: EpisodeModel,onEpisodeSelected:(String) ->Unit){
-    Column(modifier = Modifier.width(120.dp).padding(horizontal = 8.dp).clickable{onEpisodeSelected(episode.videoURL)}){
+fun EpisodeItemList(episode: EpisodeModel, onEpisodeSelected: (String) -> Unit) {
+    Column(
+        modifier = Modifier.width(120.dp).padding(horizontal = 8.dp)
+            .clickable { onEpisodeSelected(episode.videoURL) }) {
         Image(
             modifier = Modifier.height(200.dp).fillMaxSize(),
             contentDescription = null,
@@ -79,8 +94,33 @@ fun EpisodeItemList(episode: EpisodeModel,onEpisodeSelected:(String) ->Unit){
     }
 }
 
+@Composable
+fun EpisodePlayer(playVideo: String, onCloseVideo: () -> Unit){
+    AnimatedVisibility (playVideo.isNotBlank()) {
+        ElevatedCard(
+            modifier = Modifier.fillMaxWidth().height(250.dp).padding(16.dp).border(
+                3.dp,
+                Color.Green, CardDefaults.elevatedShape
+            )
+        ) {
+            Box(modifier = Modifier.background(Color.Black)) {
+                Box(modifier = Modifier.padding(16.dp), contentAlignment = Alignment.Center) {
+                    VideoPlayer(modifier = Modifier.fillMaxWidth().height(200.dp), playVideo)
+                }
+                Row{
+                    Spacer(modifier = Modifier.weight(1f))
+                    IconButton(onClick = {onCloseVideo()}){
+                        Icon(imageVector =Icons.Default.Close, contentDescription =null)
+                    }
+                }
+            }
+        }
+
+    }
+}
+
 fun getSeasonImage(seasonEpisode: SeasonEpisode): DrawableResource {
-    return when(seasonEpisode){
+    return when (seasonEpisode) {
         SeasonEpisode.SEASON_1 -> Res.drawable.season1
         SeasonEpisode.SEASON_2 -> Res.drawable.season2
         SeasonEpisode.SEASON_3 -> Res.drawable.season3
