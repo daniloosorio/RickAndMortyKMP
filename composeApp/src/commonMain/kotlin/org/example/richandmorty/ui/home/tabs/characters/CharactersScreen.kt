@@ -31,7 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -48,16 +47,20 @@ import richandmorty.composeapp.generated.resources.images
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
-fun CharactersScreens(
-    charactersViewModel: CharactersViewModel = koinViewModel<CharactersViewModel>()
+fun CharactersScreens(navigateToDetail:(CharacterModel)->Unit,
+                      charactersViewModel: CharactersViewModel = koinViewModel<CharactersViewModel>()
 ) {
     val uiState by charactersViewModel.state.collectAsState()
     val characters = uiState.characters.collectAsLazyPagingItems()
-    CharacterLazyGridList(characters,uiState)
+    CharacterLazyGridList(characters,uiState,navigateToDetail)
 }
 
 @Composable
-fun CharacterLazyGridList(characters: LazyPagingItems<CharacterModel>, uiState: CharactersState){
+fun CharacterLazyGridList(
+    characters: LazyPagingItems<CharacterModel>,
+    uiState: CharactersState,
+    navigateToDetail: (CharacterModel) -> Unit
+){
     LazyVerticalGrid (
         modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
         columns = GridCells.Fixed(2),
@@ -93,7 +96,10 @@ fun CharacterLazyGridList(characters: LazyPagingItems<CharacterModel>, uiState: 
                 items(characters.itemCount){ pos ->
 
                     characters[pos]?.let { charactersModel ->
-                        CharacterItemList(charactersModel)
+                        CharacterItemList(charactersModel){ character ->
+                            //navigate
+                            navigateToDetail(character)
+                        }
                     }
 
                 }
@@ -110,10 +116,10 @@ fun CharacterLazyGridList(characters: LazyPagingItems<CharacterModel>, uiState: 
 }
 
 @Composable
-fun CharacterItemList(charactersModel: CharacterModel) {
+fun CharacterItemList(charactersModel: CharacterModel,onItemSelected: (CharacterModel) -> Unit) {
     Box(modifier = Modifier.clip(RoundedCornerShape(24))
         .border(2.dp, color = Color.Green, shape = RoundedCornerShape(0,24,0,24)).fillMaxWidth().height(150.dp)
-        .clickable {  },
+        .clickable { onItemSelected(charactersModel) },
         contentAlignment = Alignment.BottomCenter){
         AsyncImage(
             model = charactersModel.image,
