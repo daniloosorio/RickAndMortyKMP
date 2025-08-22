@@ -12,6 +12,7 @@ fun Preview (){
         id = 3,
         isAlive = true,
         image = "",
-        name = "preview"
+        name = "preview",
+        species = "human"
     ))
 }
