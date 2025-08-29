@@ -1,5 +1,6 @@
 package org.example.richandmorty.ui.home.tabs.episodes
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,6 +22,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -28,6 +30,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.room.util.TableInfo
@@ -35,6 +39,11 @@ import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import org.example.richandmorty.domain.model.EpisodeModel
 import org.example.richandmorty.domain.model.SeasonEpisode
+import org.example.richandmorty.ui.core.BackgroundPrimaryColor
+import org.example.richandmorty.ui.core.BackgroundSecondaryColor
+import org.example.richandmorty.ui.core.BackgroundTertiaryColor
+import org.example.richandmorty.ui.core.DefaultTextColor
+import org.example.richandmorty.ui.core.Placeholder
 import org.example.richandmorty.ui.core.components.PagingLoadingState
 import org.example.richandmorty.ui.core.components.PagingType
 import org.example.richandmorty.ui.core.components.PagingWrapper
@@ -63,7 +72,8 @@ fun EpisodesScreen(
     val state by episodesViewmodel.state.collectAsState()
     val episodes: LazyPagingItems<EpisodeModel> = state.characters.collectAsLazyPagingItems()
 
-    Column(Modifier.fillMaxSize()) {
+    Column(Modifier.fillMaxSize().background(BackgroundPrimaryColor)) {
+        Spacer(Modifier.height(16.dp))
         PagingWrapper(
             pagingType = PagingType.ROW,
             pagingItems = episodes,
@@ -73,11 +83,10 @@ fun EpisodesScreen(
             emptyView = {},
             itemView = { EpisodeItemList(it) { url -> episodesViewmodel.onPlaySelectedUrl(url) } }
         )
-        EpisodePlayer(state.playVideo){episodesViewmodel.onCloseVideo()}
+        EpisodePlayer(state.playVideo) { episodesViewmodel.onCloseVideo() }
 
     }
 }
-
 
 
 @Composable
@@ -86,38 +95,63 @@ fun EpisodeItemList(episode: EpisodeModel, onEpisodeSelected: (String) -> Unit) 
         modifier = Modifier.width(120.dp).padding(horizontal = 8.dp)
             .clickable { onEpisodeSelected(episode.videoURL) }) {
         Image(
-            modifier = Modifier.height(200.dp).fillMaxSize(),
+            modifier = Modifier.height(180.dp).fillMaxSize(),
             contentDescription = null,
-            contentScale = ContentScale.Inside,
+            contentScale = ContentScale.Crop,
             painter = painterResource(getSeasonImage(episode.season))
         )
+        Spacer(modifier = Modifier.height(2.dp))
+        Text(episode.episode, color = DefaultTextColor, fontWeight = FontWeight.Bold)
     }
 }
 
 @Composable
-fun EpisodePlayer(playVideo: String, onCloseVideo: () -> Unit){
-    AnimatedVisibility (playVideo.isNotBlank()) {
-        ElevatedCard(
-            modifier = Modifier.fillMaxWidth().height(250.dp).padding(16.dp).border(
-                3.dp,
-                Color.Green, CardDefaults.elevatedShape
-            )
-        ) {
-            Box(modifier = Modifier.background(Color.Black)) {
-                Box(modifier = Modifier.padding(16.dp), contentAlignment = Alignment.Center) {
-                    VideoPlayer(modifier = Modifier.fillMaxWidth().height(200.dp), playVideo)
-                }
-                Row{
-                    Spacer(modifier = Modifier.weight(1f))
-                    IconButton(onClick = {onCloseVideo()}){
-                        Icon(imageVector =Icons.Default.Close, contentDescription =null)
+fun EpisodePlayer(playVideo: String, onCloseVideo: () -> Unit) {
+    // AnimatedVisibility (playVideo.isNotBlank()) {
+    AnimatedContent(playVideo.isNotBlank()) { condition ->
+        if (condition) {
+            ElevatedCard(
+                modifier = Modifier.fillMaxWidth().height(250.dp).padding(16.dp).border(
+                    3.dp,
+                    Color.Green, CardDefaults.elevatedShape
+                )
+            ) {
+                Box(modifier = Modifier.background(Color.Black)) {
+                    Box(modifier = Modifier.padding(16.dp), contentAlignment = Alignment.Center) {
+                        VideoPlayer(modifier = Modifier.fillMaxWidth().height(200.dp), playVideo)
+                    }
+                    Row {
+                        Spacer(modifier = Modifier.weight(1f))
+                        IconButton(onClick = { onCloseVideo() }) {
+                            Icon(imageVector = Icons.Default.Close, contentDescription = null)
+                        }
                     }
                 }
             }
+        } else {
+            ElevatedCard(
+                modifier = Modifier.fillMaxWidth().height(250.dp).padding(16.dp),
+                colors = CardDefaults.elevatedCardColors(containerColor = Placeholder)
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(painter = painterResource(Res.drawable.images), contentDescription = null)
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        "selecciona un video",
+                        color = DefaultTextColor,
+                        fontStyle = FontStyle.Italic,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
         }
-
     }
+
 }
+
 
 fun getSeasonImage(seasonEpisode: SeasonEpisode): DrawableResource {
     return when (seasonEpisode) {

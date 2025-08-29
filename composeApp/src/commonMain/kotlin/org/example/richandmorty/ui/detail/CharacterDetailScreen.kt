@@ -5,14 +5,21 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -23,11 +30,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import org.example.richandmorty.domain.model.CharacterModel
+import org.example.richandmorty.domain.model.EpisodeModel
+import org.example.richandmorty.ui.core.BackgroundPrimaryColor
+import org.example.richandmorty.ui.core.BackgroundSecondaryColor
+import org.example.richandmorty.ui.core.BackgroundTertiaryColor
+import org.example.richandmorty.ui.core.DefaultTextColor
+import org.example.richandmorty.ui.core.Green
+import org.example.richandmorty.ui.core.Pink
+import org.example.richandmorty.ui.core.components.TextTitle
 import org.example.richandmorty.ui.core.ex.aliveBorder
+import org.example.richandmorty.ui.core.ex.vertical
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -41,9 +58,71 @@ fun CharacterDetailScreen(characterModel: CharacterModel) {
     val characterDetailViewModel =
         koinViewModel<CharacterDetailViewModel>(parameters = { parametersOf(characterModel) })
     val state by characterDetailViewModel.uiState.collectAsState()
+    val scrollState = rememberScrollState()
 
-    Column(modifier = Modifier.fillMaxSize().background(Color.Black)) {
+
+    Column(modifier = Modifier.fillMaxSize().background(BackgroundPrimaryColor).verticalScroll(scrollState)) {
         MainHeader(state.characterModel)
+        Spacer(Modifier.height(16.dp))
+        Column (modifier = Modifier.fillMaxSize()
+            .clip(RoundedCornerShape(topStartPercent = 10, topEndPercent = 10)).background(
+                BackgroundSecondaryColor
+            )){
+            CharacterInformation(state.characterModel)
+            CharacterEpisodesList(state.episodes)
+        }
+    }
+}
+
+@Composable
+fun CharacterEpisodesList(episodes: List<EpisodeModel>?) {
+    ElevatedCard(modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
+        colors = CardDefaults.elevatedCardColors(containerColor = BackgroundTertiaryColor)) { //other way
+        Box(modifier = Modifier.padding(16.dp), contentAlignment = Alignment.Center) {
+            if (episodes == null) {
+                CircularProgressIndicator(color = Green)
+            } else {
+                Column {
+                    TextTitle("Episode List")
+                    Spacer(Modifier.height(6.dp))
+
+                    episodes.forEach { episode ->
+                        EpisodeItem(episode)
+                        Spacer(Modifier.height(4.dp))
+                    }
+                }
+            }
+
+        }
+    }
+}
+
+@Composable
+fun EpisodeItem(episode: EpisodeModel) {
+    Text(episode.name, color = Green, fontWeight = FontWeight.Bold)
+    Text(episode.episode, color = DefaultTextColor)
+}
+
+@Composable
+fun CharacterInformation(characterModel: CharacterModel) {
+    ElevatedCard(modifier = Modifier.padding(16.dp).fillMaxWidth(),
+        colors = CardDefaults.elevatedCardColors().copy(containerColor = BackgroundTertiaryColor)) {
+        Column(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
+            TextTitle("About the character")
+            Spacer(Modifier.height(6.dp))
+            InformationDetail("Origin", characterModel.origin)
+            Spacer(Modifier.height(2.dp))
+            InformationDetail("Genero", characterModel.gender)
+        }
+    }
+}
+
+@Composable
+fun InformationDetail(title: String, detail: String) {
+    Row {
+        Text(title, color = DefaultTextColor, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.width(4.dp))
+        Text(detail, color =Green)
     }
 }
 
@@ -74,7 +153,7 @@ fun CharacterHeader(characterModel: CharacterModel) {
         {
             Text(
                 characterModel.name,
-                color = Color.Black,
+                color = Pink,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -90,7 +169,7 @@ fun CharacterHeader(characterModel: CharacterModel) {
                     modifier = Modifier.size(205.dp).clip(CircleShape)
                         .background(Color.Black.copy(alpha = 0.15f)),
                     contentAlignment = Alignment.Center
-                ){
+                ) {
                     AsyncImage(
                         model = characterModel.image,
                         contentDescription = null,
@@ -100,9 +179,13 @@ fun CharacterHeader(characterModel: CharacterModel) {
                     )
                 }
 
-                val aliveCopy = if(characterModel.isAlive) "ALIVE" else "DEAD"
-                val aliveColor = if(characterModel.isAlive) Color.Green else Color.Red
-                Text(aliveCopy, color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold,
+                val aliveCopy = if (characterModel.isAlive) "ALIVE" else "DEAD"
+                val aliveColor = if (characterModel.isAlive) Green else Color.Red
+                Text(
+                    aliveCopy,
+                    color = Color.White,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
                     modifier = Modifier.clip(RoundedCornerShape(30)).background(aliveColor)
                         .padding(horizontal = 6.dp, vertical = 2.dp)
                 )

@@ -13,6 +13,9 @@ fun Preview (){
         isAlive = true,
         image = "",
         name = "preview",
-        species = "human"
+        species = "human",
+        gender = "male",
+        origin = "earth",
+        episodes = listOf()
     ))
 }

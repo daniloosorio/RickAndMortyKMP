@@ -49,4 +49,17 @@ class RepositoryImpl(
         return Pager(config = PagingConfig(pageSize = MAX_ITEMS, prefetchDistance = PREFETCH_ITEMS),
             pagingSourceFactory = { episodePagingSource }).flow
     }
+
+    override suspend fun getEpisodesForCharacter(episodes: List<String>): List<EpisodeModel> {
+
+        if(episodes.isEmpty()) return emptyList()
+
+        return if(episodes.size>1) {
+            api.getEpisodes(episodes.joinToString(",")).map { episodeResponse ->
+                episodeResponse.toDomain()
+            }
+        }else{
+            listOf(api.getSingleEpisode(episodes.first()).toDomain())
+        }
+    }
 }

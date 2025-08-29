@@ -14,4 +14,5 @@ interface Repository {
     suspend fun getCharacterDB(): CharacterOfTheDayModel?
     suspend fun saveCharacterDb(characterOfTheDayModel:CharacterOfTheDayModel)
     fun getAllEpisodes(): Flow<PagingData<EpisodeModel>>
+    suspend fun getEpisodesForCharacter(episodes: List<String>): List<EpisodeModel>
 }
