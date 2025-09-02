@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,7 +32,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -40,6 +43,9 @@ import androidx.paging.LoadState
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import coil3.compose.AsyncImage
+import org.example.richandmorty.ui.core.BackgroundPrimaryColor
+import org.example.richandmorty.ui.core.DefaultTextColor
+import org.example.richandmorty.ui.core.Green
 import org.example.richandmorty.ui.core.ex.vertical
 import org.jetbrains.compose.resources.painterResource
 import richandmorty.composeapp.generated.resources.Res
@@ -62,7 +68,7 @@ fun CharacterLazyGridList(
     navigateToDetail: (CharacterModel) -> Unit
 ){
     LazyVerticalGrid (
-        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxSize().background(BackgroundPrimaryColor).padding(horizontal = 16.dp),
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -70,7 +76,8 @@ fun CharacterLazyGridList(
 
         item (span = { GridItemSpan(2)}){
             Column {
-                Text("Characters", color= Color.Black, fontSize = 24.sp)
+                Text("Characters", color= DefaultTextColor, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                Spacer(Modifier.height(6.dp))
                 CharacterOfTheDay(uiState.characterOfTheDay)
             }
         }
@@ -79,7 +86,7 @@ fun CharacterLazyGridList(
                 //carga inicial
                 item (span = {GridItemSpan(2)}){
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-                        CircularProgressIndicator(Modifier.size(64.dp), color = Color.Red)
+                        CircularProgressIndicator(Modifier.size(64.dp), color = Green)
                     }
                 }
             }
@@ -106,7 +113,7 @@ fun CharacterLazyGridList(
                 if(characters.loadState.append is LoadState.Loading){
                     item (span = {GridItemSpan(2)}){
                         Box(modifier = Modifier.fillMaxWidth().height(100.dp), contentAlignment = Alignment.Center){
-                            CircularProgressIndicator(Modifier.size(64.dp), color = Color.Red)
+                            CircularProgressIndicator(Modifier.size(64.dp), color = Red)
                         }
                     }
                 }
@@ -118,7 +125,7 @@ fun CharacterLazyGridList(
 @Composable
 fun CharacterItemList(charactersModel: CharacterModel,onItemSelected: (CharacterModel) -> Unit) {
     Box(modifier = Modifier.clip(RoundedCornerShape(24))
-        .border(2.dp, color = Color.Green, shape = RoundedCornerShape(0,24,0,24)).fillMaxWidth().height(150.dp)
+        .border(2.dp, color = Green, shape = RoundedCornerShape(0,24,0,24)).fillMaxWidth().height(150.dp)
         .clickable { onItemSelected(charactersModel) },
         contentAlignment = Alignment.BottomCenter){
         AsyncImage(
@@ -148,11 +155,11 @@ fun CharacterOfTheDay(characterModel: CharacterModel? = null) {
     Card(modifier = Modifier.fillMaxWidth().height(400.dp), shape = RoundedCornerShape(12)) {
         if (characterModel == null) {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                CircularProgressIndicator(color = Color.Green)
+                CircularProgressIndicator(color = Green)
             }
         } else {
             Box(contentAlignment = Alignment.BottomStart) {
-                Box(Modifier.fillMaxSize().background(Color.Green.copy(alpha = 0.5f)))
+                Box(Modifier.fillMaxSize().background(Green.copy(alpha = 0.5f)))
 
                 AsyncImage(
                     model = characterModel.image,
