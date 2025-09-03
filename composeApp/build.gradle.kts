@@ -22,6 +22,8 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
+
+    jvm("desktop")
     
     listOf(
         iosX64(),
@@ -35,6 +37,7 @@ kotlin {
     }
     
     sourceSets {
+        val desktopMain by getting
         task("testClasses")
         androidMain.dependencies {
             implementation(compose.preview)
@@ -84,6 +87,12 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
+
+        desktopMain.dependencies {
+            implementation(compose.desktop.currentOs)
+            implementation(libs.kotlinx.coroutines.swing)
+            implementation(libs.ktor.client.cio)
+        }
     }
 }
 
@@ -125,7 +134,19 @@ ksp {
 dependencies {
     add("kspCommonMainMetadata", libs.room.compiler)
     add("kspAndroid", libs.room.compiler)
+    add("kspDesktop",libs.room.compiler)
     add("kspIosX64", libs.room.compiler)
     add("kspIosArm64", libs.room.compiler)
     add("kspIosSimulatorArm64", libs.room.compiler)
+}
+
+compose.desktop{
+    application{
+        mainClass = "org.example.richandmorty.MainKt"
+        nativeDistributions{
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi,TargetFormat.Deb)
+            packageName ="org.example.richandmorty"
+            version = "1.0.0"
+        }
+    }
 }

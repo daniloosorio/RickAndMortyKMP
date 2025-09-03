@@ -65,7 +65,7 @@ import richandmorty.composeapp.generated.resources.season7
 @OptIn(KoinExperimentalAPI::class)
 @Composable
 fun EpisodesScreen(
-    episodesViewmodel: EpisodesViewmodel = koinViewModel<EpisodesViewmodel>()
+//    episodesViewmodel: EpisodesViewmodel = koinViewModel<EpisodesViewmodel>()
 ) {
     val episodesViewmodel = koinViewModel<EpisodesViewmodel>()
 

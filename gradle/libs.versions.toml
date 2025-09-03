@@ -15,15 +15,15 @@ junit = "4.13.2"
 kermit = "2.0.4"
 kotlin = "2.1.21"
 navigationCompose = "2.9.0-beta01"
-koin = "4.0.4"
-koinCompose = "1.1.5"
-koinComposeViewModel = "1.2.0-Beta4"
+koin = "4.1.0"
 ktor = "2.3.12"
 viewmodel = "2.8.0"
 coil = "3.0.0-alpha08"
 pagingComposeCommon = "3.3.0-alpha02-0.4.0"
 kotlinxDatetime = "0.7.1"
 core-splashscreen = "1.0.1"
+
+kotlinx-coroutines = "1.8.1"
 
 #Room
 roomCommon = "2.7.2"
@@ -46,8 +46,8 @@ androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin"}
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin"}
-koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koinCompose"}
-koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koinComposeViewModel"}
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin"}
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin"}
 
 #Images
 coil-compose = {group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
@@ -63,6 +63,7 @@ ktor-client-negotiation = { module = "io.ktor:ktor-client-content-negotiation", 
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 kotlin-serialization = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 #viewmodel
 viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "viewmodel" }
 
@@ -76,6 +77,9 @@ androidx-sqlite-bundled = { group = "androidx.sqlite", name = "sqlite-bundled", 
 
 #splash
 core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "core-splashscreen" }
+
+#Desktop
+kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
