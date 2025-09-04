@@ -2,6 +2,7 @@ package org.example.richandmorty.ui.detail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,9 +18,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -36,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import org.example.richandmorty.domain.model.CharacterModel
 import org.example.richandmorty.domain.model.EpisodeModel
+import org.example.richandmorty.isDesktop
 import org.example.richandmorty.ui.core.BackgroundPrimaryColor
 import org.example.richandmorty.ui.core.BackgroundSecondaryColor
 import org.example.richandmorty.ui.core.BackgroundTertiaryColor
@@ -50,11 +55,12 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.parameter.parametersOf
 import richandmorty.composeapp.generated.resources.Res
+import richandmorty.composeapp.generated.resources.ic_back
 import richandmorty.composeapp.generated.resources.images
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
-fun CharacterDetailScreen(characterModel: CharacterModel) {
+fun CharacterDetailScreen(characterModel: CharacterModel, onBackPressed: () -> Unit) {
     val characterDetailViewModel =
         koinViewModel<CharacterDetailViewModel>(parameters = { parametersOf(characterModel) })
     val state by characterDetailViewModel.uiState.collectAsState()
@@ -62,7 +68,7 @@ fun CharacterDetailScreen(characterModel: CharacterModel) {
 
 
     Column(modifier = Modifier.fillMaxSize().background(BackgroundPrimaryColor).verticalScroll(scrollState)) {
-        MainHeader(state.characterModel)
+        MainHeader(state.characterModel,onBackPressed)
         Spacer(Modifier.height(16.dp))
         Column (modifier = Modifier.fillMaxSize()
             .clip(RoundedCornerShape(topStartPercent = 10, topEndPercent = 10)).background(
@@ -127,13 +133,21 @@ fun InformationDetail(title: String, detail: String) {
 }
 
 @Composable
-fun MainHeader(characterModel: CharacterModel) {
+fun MainHeader(characterModel: CharacterModel, onBackPressed: () -> Unit) {
     Box(modifier = Modifier.fillMaxWidth().height(300.dp)) {
         Image(
             painter = painterResource(Res.drawable.images),
             contentDescription = null,
             modifier = Modifier.fillMaxSize()
         )
+        if(isDesktop()) {
+            Icon(
+                painter = painterResource(Res.drawable.ic_back),
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.padding(16.dp).size(24.dp).clickable{onBackPressed()}
+            )
+        }
         CharacterHeader(characterModel)
     }
 }
