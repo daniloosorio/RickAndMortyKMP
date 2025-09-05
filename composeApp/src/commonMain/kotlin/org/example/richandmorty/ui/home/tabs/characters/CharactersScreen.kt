@@ -46,6 +46,9 @@ import coil3.compose.AsyncImage
 import org.example.richandmorty.ui.core.BackgroundPrimaryColor
 import org.example.richandmorty.ui.core.DefaultTextColor
 import org.example.richandmorty.ui.core.Green
+import org.example.richandmorty.ui.core.components.PagingLoadingState
+import org.example.richandmorty.ui.core.components.PagingType
+import org.example.richandmorty.ui.core.components.PagingWrapper
 import org.example.richandmorty.ui.core.ex.vertical
 import org.jetbrains.compose.resources.painterResource
 import richandmorty.composeapp.generated.resources.Res
@@ -53,81 +56,54 @@ import richandmorty.composeapp.generated.resources.images
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
-fun CharactersScreens(navigateToDetail:(CharacterModel)->Unit,
-                      charactersViewModel: CharactersViewModel = koinViewModel<CharactersViewModel>()
+fun CharactersScreens(
+    navigateToDetail: (CharacterModel) -> Unit,
+    charactersViewModel: CharactersViewModel = koinViewModel<CharactersViewModel>()
 ) {
     val uiState by charactersViewModel.state.collectAsState()
     val characters = uiState.characters.collectAsLazyPagingItems()
-    CharacterLazyGridList(characters,uiState,navigateToDetail)
+    CharacterLazyGridList(characters,  uiState,navigateToDetail)
 }
 
 @Composable
 fun CharacterLazyGridList(
     characters: LazyPagingItems<CharacterModel>,
-    uiState: CharactersState,
+    uiState : CharactersState,
     navigateToDetail: (CharacterModel) -> Unit
-){
-    LazyVerticalGrid (
-        modifier = Modifier.fillMaxSize().background(BackgroundPrimaryColor).padding(horizontal = 16.dp),
-        columns = GridCells.Fixed(2),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ){
-
-        item (span = { GridItemSpan(2)}){
+) {
+    PagingWrapper(
+        pagingType = PagingType.VERTICAL_GRID,
+        pagingItems = characters,
+        initialView = { PagingLoadingState() },
+        itemView = { CharacterItemList(it) { character -> navigateToDetail(character) } },
+        header = {
             Column {
-                Text("Characters", color= DefaultTextColor, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    "Characters",
+                    color = DefaultTextColor,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
+                )
                 Spacer(Modifier.height(6.dp))
                 CharacterOfTheDay(uiState.characterOfTheDay)
             }
-        }
-        when{
-            characters.loadState.refresh is LoadState.Loading && characters.itemCount == 0 -> {
-                //carga inicial
-                item (span = {GridItemSpan(2)}){
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-                        CircularProgressIndicator(Modifier.size(64.dp), color = Green)
-                    }
-                }
-            }
+        })
 
-            characters.loadState.refresh is LoadState.NotLoading && characters.itemCount == 0 -> {
-                item {
-                    //Api vacia
-                    Text("No hay personajes 😩 ")
-                }
-            }
 
-            else -> {
-                //recorreremos los items
-                items(characters.itemCount){ pos ->
+        /*item() {
 
-                    characters[pos]?.let { charactersModel ->
-                        CharacterItemList(charactersModel){ character ->
-                            //navigate
-                            navigateToDetail(character)
-                        }
-                    }
-
-                }
-                if(characters.loadState.append is LoadState.Loading){
-                    item (span = {GridItemSpan(2)}){
-                        Box(modifier = Modifier.fillMaxWidth().height(100.dp), contentAlignment = Alignment.Center){
-                            CircularProgressIndicator(Modifier.size(64.dp), color = Red)
-                        }
-                    }
-                }
-            }
-        }
-    }
+        }*/
 }
 
 @Composable
-fun CharacterItemList(charactersModel: CharacterModel,onItemSelected: (CharacterModel) -> Unit) {
-    Box(modifier = Modifier.clip(RoundedCornerShape(24))
-        .border(2.dp, color = Green, shape = RoundedCornerShape(0,24,0,24)).fillMaxWidth().height(150.dp)
-        .clickable { onItemSelected(charactersModel) },
-        contentAlignment = Alignment.BottomCenter){
+fun CharacterItemList(charactersModel: CharacterModel, onItemSelected: (CharacterModel) -> Unit) {
+    Box(
+        modifier = Modifier.clip(RoundedCornerShape(24))
+            .border(2.dp, color = Green, shape = RoundedCornerShape(0, 24, 0, 24)).fillMaxWidth()
+            .height(150.dp)
+            .clickable { onItemSelected(charactersModel) },
+        contentAlignment = Alignment.BottomCenter
+    ) {
         AsyncImage(
             model = charactersModel.image,
             contentDescription = null,
@@ -135,15 +111,17 @@ fun CharacterItemList(charactersModel: CharacterModel,onItemSelected: (Character
             modifier = Modifier.fillMaxSize(),
             placeholder = painterResource(Res.drawable.images)
         )
-        Box(modifier = Modifier.fillMaxWidth().height(60.dp).background(
-            brush = Brush.verticalGradient(
-                listOf(
-                    Color.Black.copy(0f),
-                    Color.Black.copy(0.6f),
-                    Color.Black.copy(1f)
+        Box(
+            modifier = Modifier.fillMaxWidth().height(60.dp).background(
+                brush = Brush.verticalGradient(
+                    listOf(
+                        Color.Black.copy(0f),
+                        Color.Black.copy(0.6f),
+                        Color.Black.copy(1f)
+                    )
                 )
-            )
-        ), contentAlignment = Alignment.Center){
+            ), contentAlignment = Alignment.Center
+        ) {
             Text(charactersModel.name, color = Color.White, fontSize = 18.sp)
         }
     }
@@ -166,7 +144,7 @@ fun CharacterOfTheDay(characterModel: CharacterModel? = null) {
                     contentDescription = "Character Of the day",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize(),
-                    placeholder = painterResource( Res.drawable.images)
+                    placeholder = painterResource(Res.drawable.images)
                 )
                 Box(
                     Modifier.fillMaxSize().background(
@@ -176,7 +154,8 @@ fun CharacterOfTheDay(characterModel: CharacterModel? = null) {
                         )
                     )
                 )
-                Text(characterModel.name,
+                Text(
+                    characterModel.name,
                     fontSize = 40.sp,
                     maxLines = 1,
                     minLines = 1,
@@ -188,7 +167,7 @@ fun CharacterOfTheDay(characterModel: CharacterModel? = null) {
                         .fillMaxHeight()
                         .vertical()
                         .rotate(-90f)
-                    )
+                )
             }
         }
     }
