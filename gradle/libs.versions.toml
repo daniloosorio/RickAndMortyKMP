@@ -30,6 +30,8 @@ roomCommon = "2.7.2"
 ksp = "2.1.21-2.0.1"
 androidx-sqliteBundled = "2.5.2"
 
+compose-webview = "1.9.20"
+
 [libraries]
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -80,6 +82,9 @@ core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = 
 
 #Desktop
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines"}
+
+#webview
+compose-webview-multiplataform = { module = "io.github.kevinnzou:compose-webview-multiplataform", version.ref = "compose-webview"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

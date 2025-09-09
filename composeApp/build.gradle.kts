@@ -80,6 +80,8 @@ kotlin {
 
             implementation(libs.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
+
+            api(libs.compose.webview.multiplataform)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -89,6 +91,9 @@ kotlin {
         }
 
         desktopMain.dependencies {
+            val kcefVersion = "1.3.1" // Use the latest version from the library's page
+            implementation(platform("dev.datlag.kcef:kcef-bom:$kcefVersion"))
+            implementation("dev.datlag.kcef:kcef")
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
             implementation(libs.ktor.client.cio)
@@ -147,6 +152,19 @@ compose.desktop{
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi,TargetFormat.Deb)
             packageName ="org.example.richandmorty"
             version = "1.0.0"
+        }
+
+        afterEvaluate {
+            tasks.withType<JavaExec>{
+                jvmArgs("--add-opens","java.desktop/sun.awt=All-UNNAMED")
+                jvmArgs("--add-opens","java.desktop/java.awt.peer=ALL-UNNAMED")
+
+                if(System.getProperty("os.name").contains("mac")){
+                    jvmArgs("--add-opens","java.desktop/sun.awt=ALL-UNNAMED")
+                    jvmArgs("--add-opens","java.desktop/sun.lwawt=ALL-UNNAMED")
+                    jvmArgs("--add-opens","java.desktop/sun.lwawt.macosx=ALL-UNNAMED")
+                }
+            }
         }
     }
 }
