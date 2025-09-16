@@ -39,6 +39,7 @@ import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import org.example.richandmorty.domain.model.EpisodeModel
 import org.example.richandmorty.domain.model.SeasonEpisode
+import org.example.richandmorty.isDesktop
 import org.example.richandmorty.ui.core.BackgroundPrimaryColor
 import org.example.richandmorty.ui.core.BackgroundSecondaryColor
 import org.example.richandmorty.ui.core.BackgroundTertiaryColor
@@ -110,13 +111,14 @@ fun EpisodePlayer(playVideo: String, onCloseVideo: () -> Unit) {
     // AnimatedVisibility (playVideo.isNotBlank()) {
     AnimatedContent(playVideo.isNotBlank()) { condition ->
         if (condition) {
+            val height = if (isDesktop()) 600.dp else 250.dp
             ElevatedCard(
-                modifier = Modifier.fillMaxWidth().height(250.dp).padding(16.dp).border(
+                modifier = Modifier.fillMaxWidth().height(height).padding(16.dp).border(
                     3.dp,
                     Color.Green, CardDefaults.elevatedShape
                 )
             ) {
-                Box(modifier = Modifier.background(Color.Black)) {
+                Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
                     Box(modifier = Modifier.padding(16.dp), contentAlignment = Alignment.Center) {
                         VideoPlayer(modifier = Modifier.fillMaxWidth().height(200.dp), playVideo)
                     }

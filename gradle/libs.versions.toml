@@ -31,6 +31,7 @@ ksp = "2.1.21-2.0.1"
 androidx-sqliteBundled = "2.5.2"
 
 compose-webview = "1.9.20"
+kcef = "2023.10.11.1"
 
 [libraries]
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
@@ -84,7 +85,8 @@ core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = 
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines"}
 
 #webview
-compose-webview-multiplataform = { module = "io.github.kevinnzou:compose-webview-multiplataform", version.ref = "compose-webview"}
+compose-webview-multiplataform = { module = "io.github.kevinnzou:compose-webview-multiplatform", version.ref = "compose-webview"}
+kcef = { group = "dev.datlag", name = "kcef", version.ref = "kcef" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
